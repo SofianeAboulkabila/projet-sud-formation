@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page Support Tickets
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1 class="text-primary d-flex justify-content-center mt-1 mb-1">Tickets à traiter:</h1>
+
+
+		{% for flashMessage in app.session.flashbag.get('success') %}
+			<div class="alert alert-success">
+				{{ flashMessage }}
+			</div>
+		{% endfor %}
+
+		<a href="{{ path('app_support_ticket_new') }}" class="btn btn-primary">Nouveau Ticket</a>
+
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Numéro</th>
+					<th scope="col">Nom_Support</th>
+					<th scope="col">Nom_Demandeur</th>
+					<th scope="col">Ticket_Message</th>
+					<th scope="col">Date_Création</th>
+					<th scope="col">Date_Résolution</th>
+					<th scope="col">Edition</th>
+					<th scope="col">Supression</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for supportTicket in supportTickets %}
+					<tr class="table-secondary">
+						<th scope="row">{{ supportTicket.getId() }}</th>
+						<td>{{ supportTicket.getNomSupport() }}</td>
+						<td>{{ supportTicket.getNomDemandeur() }}</td>
+						<td>{{ supportTicket.getTicketMessage() }}</td>
+						<td>{{ supportTicket.getDateCreation | date('d/m/Y') }}</td>
+						{% if supportTicket.getDateResolution() is not null %}
+							<td>{{ supportTicket.getDateResolution()|date('d/m/Y') }}</td>
+						{% else %}
+							<td></td>
+						{% endif %}
+						<td>
+							<a href="{{ path('app_support_ticket_edit', { id: supportTicket.id}) }}" class="btn btn-info">Modifier</a>
+						</td>
+						<td>
+							<a href="{{ path('app_support_ticket_delete', { id: supportTicket.id}) }}" class="btn btn-warning">Supprimer</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="container d-flex justify-content-center mt-2">
+			{{ knp_pagination_render(supportTickets) }}
+		</div>
+	</div>
+{% endblock %}
